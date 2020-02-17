@@ -1,11 +1,19 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { fetchPosts } from "../actions/postAction";
+import PropTypes from "prop-types";
 
 class Posts extends Component {
   componentDidMount() {
     this.props.fetchPosts();
   }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.newPost) {
+      this.props.posts.unshift(nextProps.newPost);
+    }
+  }
+
   render() {
     const postItems = this.props.posts.map(post => (
       <div key={post.id}>
@@ -23,8 +31,15 @@ class Posts extends Component {
 }
 
 const mapStateToProps = state => ({
-  posts: state.posts.items
+  posts: state.posts.items,
+  newPost: state.posts.item
 });
+
+Posts.PropTypes = {
+  fetchPosts: PropTypes.func.isRequired,
+  posts: PropTypes.array.isRequired,
+  newPost: PropTypes.object
+};
 
 export default connect(
   mapStateToProps,
